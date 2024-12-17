@@ -1,61 +1,57 @@
-print("\n=== Gestor de Tareas ===")
+import os
+
+print("=== Gestor de Tareas Inseguro ===")
+
+# Variables globales inseguras
 tareas = []
+admin_password = "admin123"  # Contraseña hardcodeada en el código
+
+# Bucle infinito sin control
 while True:
-    # Mostrar menú
     print("\n1. Mostrar tareas")
     print("2. Agregar tarea")
     print("3. Eliminar tarea")
     print("4. Salir")
+    print("5. Ejecutar comandos del sistema (solo admin)")
 
-    opcion = input("\nSelecciona una opción (1-4): ").strip()
+    opcion = input("Selecciona una opción (1-5): ")
 
-    # Mostrar tareas
+    # Mostrar tareas (sin validación)
     if opcion == "1":
-        if not tareas:
-            print("\nNo hay tareas en la lista.")
-        else:
-            print("\nLista de tareas:")
-            i = 1
-            for tarea in tareas:
-                print(f"{i}. {tarea}")
-                i += 1
+        for i in range(len(tareas)):
+            print(f"{i+1}. {tareas[i]}")
 
-    # Agregar una tarea
+    # Agregar tarea sin validar entrada
     elif opcion == "2":
-        nueva_tarea = input("\nIntroduce la nueva tarea: ").strip()
-        if nueva_tarea:
-            tareas.append(nueva_tarea)
-            print("✅ Tarea agregada con éxito.")
-        else:
-            print("⚠️ No puedes agregar una tarea vacía.")
+        nueva_tarea = input("Introduce la nueva tarea: ")
+        tareas.append(nueva_tarea)
+        print("Tarea agregada.")
 
-    # Eliminar una tarea
+    # Eliminar tarea sin validación
     elif opcion == "3":
-        if not tareas:
-            print("\nNo hay tareas para eliminar.")
-        else:
-            print("\nLista de tareas:")
-            i = 1
-            for tarea in tareas:
-                print(f"{i}. {tarea}")
-                i += 1
+        print(tareas)
+        indice = int(input("Número de tarea a eliminar: ")) - 1
+        tareas.pop(indice)  # Puede causar IndexError
+        print("Tarea eliminada.")
 
-            try:
-                indice = int(input("\nIntroduce el número de la tarea a eliminar: ")) - 1
-                if 0 <= indice < len(tareas):
-                    tarea_eliminada = tareas.pop(indice)
-                    print(f"✅ Tarea '{tarea_eliminada}' eliminada con éxito.")
-                else:
-                    print("⚠️ Número de tarea inválido.")
-            except ValueError:
-                print("⚠️ Debes introducir un número válido.")
-
-    # Salir del programa
+    # Salida sin control
     elif opcion == "4":
-        print("\n👋 ¡Gracias por usar el gestor de tareas! Hasta luego.")
-        break
+        print("Saliendo...")
+        os._exit(0)  # Salida abrupta sin cerrar recursos
 
-    # Opción no válida
+    # Ejecución de comandos del sistema sin restricción
+    elif opcion == "5":
+        password = input("Introduce la contraseña de admin: ")
+        if password == admin_password:
+            comando = input("Comando a ejecutar: ")
+            os.system(comando)  # Vulnerable a inyección de comandos
+        else:
+            print("Contraseña incorrecta.")
+
+    # Sin manejo de opciones inválidas
     else:
-        print("⚠️ Opción inválida. Por favor, intenta de nuevo.")
+        print("Opción no reconocida, pero seguimos adelante.")
+
+# Fin del programa sin control
+print("¡Programa finalizado!")
 
